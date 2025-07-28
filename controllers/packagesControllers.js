@@ -1,7 +1,7 @@
 const Package = require("../models/package");
 const getAllPackages = async (req, res) => {
   try {
-    console.log("Received Body:", req.body);
+    console.log("incomming data:", req.body);
 
     const packages = await Package.find();
     res.status(200).json({
@@ -71,7 +71,7 @@ const updatePackage = async (req, res) => {
       runValidators: true,
     });
 
-    if (!updatedData) {
+    if (!updatedPackage) {
       return res.status(404).json({
         success: false,
         message: "Package not found",
@@ -104,7 +104,7 @@ const deletePackage = async (req, res) => {
       });
     }
 
-    req.status(200).json({
+    res.status(200).json({
       status: true,
       message: "Package deleted successfully",
     });
@@ -117,10 +117,37 @@ const deletePackage = async (req, res) => {
   }
 };
 
+const filterPackages = async (req, res) => {
+  try {
+    const { country, maxPrice, duration, isActive } = req.query;
+    const filter = {};
+
+    if (country) filter.country = country;
+    if (maxPrice) filter.price = { $lte: Number(maxPrice) };
+    if (duration) filter.duration = duration;
+    if (isActive) filter.isActive = isActive === "true";
+
+    const packages = await Package.find(filter);
+
+    res.status(200).json({
+      success: true,
+      message: "Filtered Packages fetched successfully",
+      data: packages,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching filtered packages",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllPackages,
   createPackages,
   getPackageById,
   updatePackage,
   deletePackage,
+  filterPackages,
 };
