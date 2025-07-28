@@ -61,4 +61,40 @@ const createPackages = async (req, res) => {
   }
 };
 
-module.exports = { getAllPackages, createPackages, getPackageById };
+const updatePackage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = await req.body;
+
+    const updatedPackage = await Package.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedData) {
+      return res.status(404).json({
+        success: false,
+        message: "Package not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Package updated successfullu",
+      data: updatedPackage,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating package",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  getAllPackages,
+  createPackages,
+  getPackageById,
+  updatePackage,
+};
