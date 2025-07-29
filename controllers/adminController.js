@@ -11,7 +11,7 @@ const createAdmin = async (req, res) => {
 
     if (existing) {
       return res.status(400).json({
-        success: false,
+        status: false,
         message: "Admin already exists",
       });
     }
@@ -24,14 +24,14 @@ const createAdmin = async (req, res) => {
     const savedAdmin = await newAdmin.save();
 
     res.status(201).json({
-      success: true,
-      message: "Admin created successfully",
+      status: true,
+      message: "Admin created statusfully",
       data: { id: savedAdmin._id, email: savedAdmin.email },
     });
   } catch (error) {
     console.error("Error creating admin:", error);
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error creating admin",
       error: error.message,
     });
@@ -45,7 +45,7 @@ const loginAdmin = async (req, res) => {
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(404).json({
-        success: false,
+        status: false,
         message: "Invalid email or password ",
       });
     }
@@ -53,7 +53,7 @@ const loginAdmin = async (req, res) => {
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
       return res.status(400).json({
-        success: false,
+        status: false,
         message: "Invalid email or password",
       });
     }
@@ -70,15 +70,99 @@ const loginAdmin = async (req, res) => {
     });
 
     res.status(200).json({
-      success: true,
-      message: "Login successful",
+      status: true,
+      message: "Login statusful",
       data: { id: admin._id, email: admin.email, token: token },
     });
   } catch (error) {
     console.error("Error loggin in admin:", error);
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error logging in admin",
+      error: error.message,
+    });
+  }
+};
+
+const getAdmin = async (req, res) => {
+  try {
+    const admins = await Admin.find({}, { _id: 1, email: 1 });
+    res.status(200).json({
+      status: true,
+      data: admins,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: "failed to get admins",
+      error: error.message,
+    });
+  }
+};
+
+const getAdminById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const admin = await Admin.findById(id, { _id: 1, email: 1 });
+    if (!admin) {
+      res.status(404).json({
+        status: false,
+        message: "Admin not found",
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data: admin,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: "Failed to get admin",
+      error: error.message,
+    });
+  }
+};
+
+// update admin data
+const updateAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { email, password } = req.body;
+  try {
+    if (!email && !password) {
+      return res.status(400).json({
+        status: false,
+        message: "Nothing to update - email or password must be provided",
+      });
+    }
+
+    const updateFields = {};
+
+    if (email) updateFields.email = email;
+    if (password) {
+      updateFields.password = await bcrypt.hash(password, 10);
+    }
+
+    const updatedAdmin = await Admin.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    });
+
+    if (!updatedAdmin) {
+      return res.status(404).json({
+        status: false,
+        message: "Admin not found",
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data: { id: updatedAdmin._id, email: updatedAdmin.email },
+      message: "Admin updated successfully !",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: "Failed to update Admin ",
       error: error.message,
     });
   }
@@ -87,4 +171,7 @@ const loginAdmin = async (req, res) => {
 module.exports = {
   createAdmin,
   loginAdmin,
+  getAdmin,
+  getAdminById,
+  updateAdmin,
 };

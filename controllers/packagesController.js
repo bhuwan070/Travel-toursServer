@@ -5,13 +5,13 @@ const getAllPackages = async (req, res) => {
 
     const packages = await Package.find();
     res.status(200).json({
-      success: true,
-      message: "Packages fetched successfully",
+      status: true,
+      message: "Packages fetched statusfully",
       data: packages,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error fetching packages",
       error: error.message,
     });
@@ -24,19 +24,19 @@ const getPackageById = async (req, res) => {
     const package = await Package.findById(id);
     if (!package) {
       return res.status(404).json({
-        success: false,
+        status: false,
         message: "Package not found",
       });
     }
 
     res.status(200).json({
-      success: true,
-      message: "Package fetched successfully",
+      status: true,
+      message: "Package fetched statusfully",
       data: package,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error fetching package",
       error: error.message,
     });
@@ -48,13 +48,13 @@ const createPackages = async (req, res) => {
     const newPackage = new Package(req.body);
     const savedPackage = await newPackage.save();
     res.status(201).json({
-      success: true,
-      message: "Package created successfully",
+      status: true,
+      message: "Package created statusfully",
       data: savedPackage,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error creating package",
       error: error.message,
     });
@@ -73,19 +73,19 @@ const updatePackage = async (req, res) => {
 
     if (!updatedPackage) {
       return res.status(404).json({
-        success: false,
+        status: false,
         message: "Package not found",
       });
     }
 
     res.status(200).json({
-      success: true,
-      message: "Package updated successfullu",
+      status: true,
+      message: "Package updated statusfullu",
       data: updatedPackage,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error updating package",
       error: error.message,
     });
@@ -99,18 +99,18 @@ const deletePackage = async (req, res) => {
 
     if (!deletedPackage) {
       return res.status(404).json({
-        success: false,
+        status: false,
         message: "Package Not Found",
       });
     }
 
     res.status(200).json({
       status: true,
-      message: "Package deleted successfully",
+      message: "Package deleted statusfully",
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error deleting package",
       error: error.message,
     });
@@ -130,13 +130,13 @@ const filterPackages = async (req, res) => {
     const packages = await Package.find(filter);
 
     res.status(200).json({
-      success: true,
-      message: "Filtered Packages fetched successfully",
+      status: true,
+      message: "Filtered Packages fetched statusfully",
       data: packages,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
+      status: false,
       message: "Error fetching filtered packages",
       error: error.message,
     });
