@@ -7,7 +7,7 @@ const {
   updatePackage,
   deletePackage,
   filterPackages,
-} = require("../controllers/packagesControllers");
+} = require("../controllers/packagesController");
 
 const router = express.Router();
 
