@@ -168,10 +168,28 @@ const updateAdmin = async (req, res) => {
   }
 };
 
+// delete admin
+const deleteAdmin = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Admin.findByIdAndDelete(id);
+    res.status(200).json({
+      status: true,
+      message: "Admin deleted successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: "Failed to delete admin",
+    });
+  }
+};
+
 module.exports = {
   createAdmin,
   loginAdmin,
   getAdmin,
   getAdminById,
   updateAdmin,
+  deleteAdmin,
 };
