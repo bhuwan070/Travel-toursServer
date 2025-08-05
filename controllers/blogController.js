@@ -1,5 +1,5 @@
 const Blogs = require("../models/Blog");
-const { findByIdAndUpdate } = require("../models/package");
+const { findByIdAndUpdate, findByIdAndDelete } = require("../models/package");
 
 const getAllBlogs = async (req, res) => {
   try {
@@ -96,4 +96,54 @@ const updateBlog = async (req,res) =>{
     }
 }
 
-module.exports = { getAllBlogs, getBlogById, createBlogs, updateBlog};
+const filterBlogs = async (req,res) =>{
+    try {
+        const { country, place} = req.query();
+        const filter = {};
+
+        if(country) filter.country = country;
+        if(place) filter.place = place;
+
+        const blogs = await Blogs.find(filter)
+
+        res.status(200).json({
+            status: true,
+            message: "filtered blog successfully",
+            data: blogs,
+        })
+    } catch (error) {
+        res.status(500).json({
+            status:false,
+            message:"Error filtering Blogs",
+            error: error.message,
+        })
+        
+    }
+}
+
+const deleteBlogs = async (req,res) =>{
+    try {
+        const { id } = req.params;
+        const deletedBlog = await Blogs.findByIdAndDelete(id)
+        if(!deletedBlog){
+            res.status(404).json({
+                status:false,
+                message: "Blog not found",
+                error:error.message,
+            })
+        }
+        res.status(200).json({
+            status:true,
+            message:"Deleted blog successfully!",
+            d
+        })
+    } catch (error) {
+        res.status(500).json({
+            status:false,
+            message:"Error deleting Blog",
+            error: error.message,
+        })
+    }
+}
+
+module.exports = { getAllBlogs, getBlogById, createBlogs, updateBlog, filterBlogs, deleteBlogs};
