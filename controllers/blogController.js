@@ -44,23 +44,23 @@ const getBlogById = async (req, res) => {
   }
 };
 
-// const createBlogs = asyc (req,res) =>{
-//     try {
-//         const newBlogs = new Blogs(req.body);
-//         const savedBlogs = await newBlogs.save()
-//         res.status(200).json({
-//             status:true,
-//             message:"Bolg is created successfully",
-//             data: savedBlogs,
-//         })
-//         } catch (error) {
-//             res.status(500).json({
-//                 status:false,
-//                 message:"Error creating blog",
-//                 error:error.message,
-//             })
+const createBlogs = asyc (req,res) =>{
+    try {
+        const newBlogs = new Blogs(req.body);
+        const savedBlogs = await newBlogs.save()
+        res.status(200).json({
+            status:true,
+            message:"Bolg is created successfully",
+            data: savedBlogs,
+        })
+        } catch (error) {
+            res.status(500).json({
+                status:false,
+                message:"Error creating blog",
+                error:error.message,
+            })
         
-//     }
+    }
 };
 
 module.exports = { getAllBlogs, getBlogById, createBlogs };
