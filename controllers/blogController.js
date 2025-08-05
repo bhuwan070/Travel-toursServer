@@ -1,4 +1,5 @@
 const Blogs = require("../models/Blog");
+const { findByIdAndUpdate } = require("../models/package");
 
 const getAllBlogs = async (req, res) => {
   try {
@@ -63,4 +64,36 @@ const createBlogs = asyc (req,res) =>{
     }
 };
 
-module.exports = { getAllBlogs, getBlogById, createBlogs };
+const updateBlog = async (req,res) =>{
+    try {
+        const { id } = req.params();
+        const updatedData = await req.body();
+        const updatedBlog = await package.findByIdAndUpdate(id, updatedData,{
+            new: true,
+            runValidators: true,
+        })
+
+        if(!updateBlog){
+            res.status(404).json({
+                status: false,
+                message: "Blog not found",
+                error: error.message,
+            })
+        }
+
+        res.status(200).json({
+            status:true,
+            message: "Blog updated successfully!",
+            data: updatedBlog,
+        })
+    } catch (error) {
+        res.status(500).json({
+            status:false,
+            message: "Error fetching blog",
+            error: error.message
+        })
+        
+    }
+}
+
+module.exports = { getAllBlogs, getBlogById, createBlogs, updateBlog};
